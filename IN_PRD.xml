@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<DEFTABLE>
+    <TABLE DATACENTER="HTSA_P1A_0000" TABLE_NAME="RPMHBIN">
+        <JOB
+        APPLICATION="PRPM"
+        APR="1"
+        FEB="1"
+        JAN="1"
+        MAR="1"
+        CMDLINE="/hsbc/rpm/hbhk/xxx_1.sh"
+        CYCLIC="0"
+        JOBNAME="JOBNAME_1"
+        NODE_ID="PRD.SERVER"
+        >
+        </JOB>
+        <JOB
+        APPLICATION="PRPM"
+        APR="1"
+        FEB="1"
+        JAN="1"
+        MAR="1"
+        CMDLINE="/hsbc/rpm/hbhk/xxx_2.sh"
+        CYCLIC="0"
+        NODE_ID="PRD.SERVER"
+        JOBNAME="JOBNAME_2"
+        >
+        </JOB>
+        <JOB
+        APPLICATION="PRPM"
+        APR="1"
+        FEB="1"
+        JAN="1"
+        MAR="1"
+        CMDLINE="/hsbc/rpm/hbhk/xxx_2.sh"
+        CYCLIC="0"
+        NODE_ID="PRD.SERVER"
+        JOBNAME="JOBNAME_3"
+        >
+        </JOB>
+    </TABLE>
+</DEFTABLE>
