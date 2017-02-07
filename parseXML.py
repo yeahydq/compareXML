@@ -4,7 +4,7 @@
 
 from xml.dom import minidom
 import sys
-
+import copy
 def parseXML(xmlName='/dev/null'):
     xmlFile=minidom.parse(xmlName)
     xmlTree=xmlFile.documentElement
@@ -19,9 +19,13 @@ def parseXML(xmlName='/dev/null'):
             print "name element:%s"%job.getAttribute('INCOND')
 
     return jobList
-
-jobList_A=parseXML('./IN_PRD.xml')
-jobList_B=parseXML('./IN_UAT.xml')
+def replaceVer(jobList={},mapps={}):
+    newList=copy.deepcopy(jobList)
+    for job in newList:
+        for key in mapps:
+            if newList[job][key]==mapps[key][1]:
+                newList[job][key]=mapps[key][0]
+    return newList
 
 def cmpdicts(dct0, dct1):
     diffs = {}
@@ -31,18 +35,29 @@ def cmpdicts(dct0, dct1):
                 diffs[k]=(dct0.get(k),dct1.get(k))
     return diffs
 
-diff_Jobs= cmpdicts(jobList_A,jobList_B)
-print diff_Jobs
-for job in diff_Jobs:
-    if job not in jobList_A:
-        print ('%s not in LEFT XML')%job
-        continue
-    if job not in jobList_B:
-        print ('%s not in RIGHT XML')%job
-        continue
-    print ('%s%s')%(job,
-                      str(cmpdicts(jobList_A[job],jobList_B[job]))
-                      )
+mapping={
+    "NODE_ID":('PRD.SERVER','UAT.SERVER'),
+    "USER_ID": ('PRD.ID', 'UAT.ID'),
+}
+
+def compareXML(jobList_A,jobList_B):
+    diff_Jobs= cmpdicts(jobList_A,jobList_B)
+    # print diff_Jobs
+    for job in diff_Jobs:
+        if job not in jobList_A:
+            print ('%s not in LEFT XML')%job
+            continue
+        if job not in jobList_B:
+            print ('%s not in RIGHT XML')%job
+            continue
+        print ('%s%s')%(job,str(cmpdicts(jobList_A[job],jobList_B[job])))
+
+jobList_A=parseXML('./IN_PRD.xml')
+jobList_B=parseXML('./IN_UAT.xml')
+jobList_C=replaceVer(jobList_B,mapping)
+
+compareXML(jobList_A,jobList_C)
+# atts = dict(job.attributes.items())
 
 sys.exit(0)
 attributes={}

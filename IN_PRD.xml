@@ -11,12 +11,14 @@
         CYCLIC="0"
         JOBNAME="JOBNAME_1"
         NODE_ID="PRD.SERVER"
+        USER_ID="PRD.ID"
         >
         </JOB>
         <JOB
         APPLICATION="PRPM"
         APR="1"
         FEB="1"
+        USER_ID="PRD.ID"
         JAN="1"
         MAR="1"
         CMDLINE="/hsbc/rpm/hbhk/xxx_2.sh"
@@ -28,6 +30,7 @@
         <JOB
         APPLICATION="PRPM"
         APR="1"
+        USER_ID="PRD.ID"
         FEB="1"
         JAN="1"
         MAR="1"
