@@ -28,8 +28,10 @@ def parseXML(xmlName='/dev/null'):
         for child in iterate_children(job):
             # print child.localName
             # print dict(child.attributes.items())
-            childDict[child.localName]=dict(child.attributes.items())
-        jobList[jobName].update(childDict)
+            # childDict.append(dict(child.attributes.items()))
+            childDict.setdefault(child.localName,[])
+            childDict[child.localName].append(child.attributes.items())
+        jobList[jobName].update(dict(childDict))
 
     return jobList
 def replaceVer(jobList={},mapps={}):
