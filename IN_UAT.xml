@@ -13,6 +13,8 @@
         CYCLIC="0"
         JOBNAME="JOBNAME_1"
         >
+        <QUANTITATIVE NAME="PRPM_QR10" QUANT="10"/>
+        <OUTCOND NAME="N-PRPMIN001-TO-PRPMIN002" ODATE="ODAT" SIGN="ADD"/>
         </JOB>
         <JOB
         APPLICATION="PRPM"
@@ -26,7 +28,12 @@
         NODE_ID="UAT.SERVER"
         JOBNAME="JOBNAME_3"
         >
-        </JOB>        <JOB
+        <INCOND AND_OR="AND" NAME="N-PRPMIN002-TO-PRPMIN003" ODATE="ODAT"/>
+        <QUANTITATIVE NAME="PRPM_QR10" QUANT="10"/>
+        <OUTCOND NAME="N-PRPMIN002-TO-PRPMIN003" ODATE="ODAT" SIGN="DEL"/>
+        <OUTCOND NAME="N-PRPMIN003-TO-PRPMIN004" ODATE="ODAT" SIGN="ADD"/>
+       </JOB>
+        <JOB
         APPLICATION="PRPM"
         APR="1"
         FEB="1"
@@ -36,8 +43,11 @@
         USER_ID="UAT.ID"
         CMDLINE="/hsbc/rpm/hbhk/xxx_2.sh"
         CYCLIC="0"
-        JOBNAME="JOBNAME_2"
-        >
+        JOBNAME="JOBNAME_2">
+        <INCOND AND_OR="AND" NAME="N-PRPMIN001-TO-PRPMIN002" ODATE="ODAT"/>
+        <QUANTITATIVE NAME="PRPM_QR10" QUANT="10"/>
+        <OUTCOND NAME="N-PRPMIN001-TO-PRPMIN002" ODATE="ODAT" SIGN="DEL"/>
+        <OUTCOND NAME="N-PRPMIN002-TO-PRPMIN004" ODATE="ODAT" SIGN="ADD"/>
         </JOB>
     </TABLE>
 </DEFTABLE>

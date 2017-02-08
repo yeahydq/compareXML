@@ -5,6 +5,13 @@
 from xml.dom import minidom
 import sys
 import copy
+def iterate_children(parent):
+    child = parent.firstChild
+    while child != None:
+        if child.localName <> None:
+            yield child
+        child = child.nextSibling
+
 def parseXML(xmlName='/dev/null'):
     xmlFile=minidom.parse(xmlName)
     xmlTree=xmlFile.documentElement
@@ -17,6 +24,12 @@ def parseXML(xmlName='/dev/null'):
         jobList[jobName]=dict(job.attributes.items())
         if job.hasAttribute('INCOND'):
             print "name element:%s"%job.getAttribute('INCOND')
+        childDict={}
+        for child in iterate_children(job):
+            # print child.localName
+            # print dict(child.attributes.items())
+            childDict[child.localName]=dict(child.attributes.items())
+        jobList[jobName].update(copy.deepcopy(childDict))
 
     return jobList
 def replaceVer(jobList={},mapps={}):
