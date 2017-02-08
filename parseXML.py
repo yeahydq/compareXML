@@ -29,7 +29,7 @@ def parseXML(xmlName='/dev/null'):
             # print child.localName
             # print dict(child.attributes.items())
             childDict[child.localName]=dict(child.attributes.items())
-        jobList[jobName].update(copy.deepcopy(childDict))
+        jobList[jobName].update(childDict)
 
     return jobList
 def replaceVer(jobList={},mapps={}):
