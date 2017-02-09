@@ -22,15 +22,12 @@ def parseXML(xmlName='/dev/null'):
         # if job.hasAttribute('JOBNAME'):
         jobName=job.getAttribute('JOBNAME')
         jobList[jobName]=dict(job.attributes.items())
-        if job.hasAttribute('INCOND'):
-            print "name element:%s"%job.getAttribute('INCOND')
         childDict={}
         for child in iterate_children(job):
-            # print child.localName
-            # print dict(child.attributes.items())
-            # childDict.append(dict(child.attributes.items()))
             childDict.setdefault(child.localName,[])
-            childDict[child.localName].append(child.attributes.items())
+            childDict[child.localName].append(dict(child.attributes.items()))
+        childDict[child.localName] = sorted(childDict[child.localName], key=lambda k: k['NAME'])
+
         jobList[jobName].update(dict(childDict))
 
     return jobList
@@ -67,6 +64,32 @@ def compareXML(jobList_A,jobList_B):
             continue
         print ('%s%s')%(job,str(cmpdicts(jobList_A[job],jobList_B[job])))
 
+
+def parseXML_New(xmlName='/dev/null'):
+    xmlFile=minidom.parse(xmlName)
+    xmlTree=xmlFile.documentElement
+    a=loopXML(xmlTree)
+    print a
+
+def loopXML(tree=None,cnt=0):
+    xml=[]
+    xml.append({tree.nodeName:dict(tree.attributes.items())})
+    print '---'*cnt, "NodeName:",tree.nodeName,"Value:",dict(tree.attributes.items())
+    attr=[]
+    for newTree in iterate_children(tree):
+        attr.append(loopXML(newTree,cnt+1))
+    if attr <> None and isinstance(attr,list):
+        attr=sorted(attr,key=lambda x:x.get('NAME'))
+        return xml.extend(attr)
+    else:
+        return xml
+
+
+# childDict[child.localName] = sorted(childDict[child.localName], key=lambda k: k['NAME'])
+
+parseXML_New('./IN_UAT.xml')
+
+sys.exit(0)
 jobList_A=parseXML('./IN_PRD.xml')
 jobList_B=parseXML('./IN_UAT.xml')
 jobList_C=replaceVer(jobList_B,mapping)
