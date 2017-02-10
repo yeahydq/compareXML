@@ -73,16 +73,19 @@ def parseXML_New(xmlName='/dev/null'):
 
 def loopXML(tree=None,cnt=0):
     xml=[]
-    xml.append({tree.nodeName:dict(tree.attributes.items())})
+    xml.extend([{tree.nodeName:dict(tree.attributes.items())}])
     print '---'*cnt, "NodeName:",tree.nodeName,"Value:",dict(tree.attributes.items())
     attr=[]
     for newTree in iterate_children(tree):
-        attr.append(loopXML(newTree,cnt+1))
-    if attr <> None and isinstance(attr,list):
-        attr=sorted(attr,key=lambda x:x.get('NAME'))
-        return xml.extend(attr)
-    else:
-        return xml
+        newXml=loopXML(newTree,cnt+1)
+        if newXml <> None:
+            attr.append(newXml)
+    # print "isinstance(attr,list):",attr
+    # attr=sorted(attr,key=lambda x:x.get('NAME'))
+    if len(attr) >0 :
+         attr=sorted(attr,key=lambda x:x[0].items()[0][1].get('NAME',"ZZZZ"))
+    xml.extend(attr)
+    return xml
 
 
 # childDict[child.localName] = sorted(childDict[child.localName], key=lambda k: k['NAME'])

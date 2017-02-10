@@ -13,8 +13,8 @@
         CYCLIC="0"
         JOBNAME="JOBNAME_1"
         >
-        <QUANTITATIVE NAME="PRPM_QR10" QUANT="10"/>
         <OUTCOND NAME="N-PRPMIN001-TO-PRPMIN002" ODATE="ODAT" SIGN="ADD"/>
+        <QUANTITATIVE NAME="PRPM_QR10" QUANT="10"/>
         </JOB>
         <JOB
         APPLICATION="PRPM"
