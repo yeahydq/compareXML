@@ -22,7 +22,7 @@
         FEB="1"
         JAN="1"
         MAR="1"
-        CMDLINE="/hsbc/rpm/hbhk/xxx_33.sh"
+        CMDLINE="/hsbc/rpm/hbhk/xxx_3.sh"
         USER_ID="UAT.ID"
         CYCLIC="0"
         NODE_ID="UAT.SERVER"

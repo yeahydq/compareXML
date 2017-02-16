@@ -4,7 +4,7 @@
 
 from xml.dom import minidom
 import sys
-import copy
+import re
 def iterate_children(parent):
     child = parent.firstChild
     while child != None:
@@ -49,7 +49,7 @@ def replaceDict(jobList={}, mapps={}):
         elif type(jobList[key]) == list:
             replaceList(jobList[key], mapps)
 
-    for key in mapps:
+    for key,v in mapps.items():
         if jobList.get(key) == mapps[key][1]:
             jobList[key] = mapps[key][0]
     pass
@@ -64,11 +64,29 @@ def cmpdicts(dct0, dct1):
     return diffs
 
 
+def _sortListMethod(l):
+    if isinstance(l,list):
+        return l[0]
+    elif isinstance(l,dict):
+        try:
+            return l.get('JOB').get('JOBNAME')
+        except Exception,e:
+            return l.get('JOB')
+
+
+def getFromDict(d={},key="JOBNAME"):
+    for k,v in d.items():
+        if k==key:
+            return v
+        elif isinstance(v,dict):
+            return getFromDict(v,key)
+
+
 def cmpDeepLists(listA, listB):
     diffs = []
     #
-    sortA=sorted(listA)
-    sortB=sorted(listB)
+    sortA=sorted(listA,key=_sortListMethod)
+    sortB=sorted(listB,key=_sortListMethod)
     # print sortA,sortB
     iA=0
     iB=0
@@ -91,10 +109,16 @@ def cmpDeepLists(listA, listB):
             iA+=1
             iB+=1
         elif nxtA == curB:
-                diffs.append({"Left Insert": curA})
+                if curTypA==dict:
+                    diffs.append({"Left Insert": curA.values()[0].get('JOBNAME',curA)})
+                else:
+                    diffs.append({"Left Insert": curA})
                 iA += 1
         elif curA == nxtB:
-            diffs.append({"Right Insert": curB})
+            if curTypB == dict:
+                diffs.append({"Right Insert": curB.values()[0].get('JOBNAME',curB)})
+            else:
+                diffs.append({"Right Insert": curB})
             iB += 1
         elif curTypA==dict and curTypB==dict and curA.get('NAME') == curB.get('NAME'):
             diffDict=cmpDeepDict(curA,curB)
@@ -124,8 +148,6 @@ def cmpDeepDict(dct0, dct1,keyFld="JOBNAME"):
     for k in keys:
         if dct0.get(k)!=dct1.get(k):
             if dct1.get(k) == None:
-                # diffs[k] = ({"Left Insert": (dct0.get(keyFld),k, dct0.get(k))})
-                # JOBNAME=JOB001 Field="123"
                 diffs[k] = {"Left Insert": 'where %s="%s", string %s="%s" is added' % (keyFld,dct0.get(keyFld),k, dct0.get(k))}
             elif dct0.get(k) == None:
                 diffs[k] = {"Right Insert":'where %s="%s", string %s="%s" is added' % (keyFld,dct1.get(keyFld),k, dct1.get(k))}
@@ -148,8 +170,8 @@ def getFrmList(l=[],i=0):
     if i >= len(l):
         return None
     else:
-        return l[min(i,len(l)-1)]
-
+        # return l[min(i,len(l)-1)]
+        return l[i]
 
 
 def compareXML(jobList_A,jobList_B):
@@ -171,7 +193,8 @@ def parseXML_New(xmlName='/dev/null'):
     return loopXML(xmlTree)
 
 def loopXML(tree=None,cnt=0):
-    currLvl=[[{tree.nodeName:dict(tree.attributes.items())}]]
+    # currLvl=[[{tree.nodeName:dict(tree.attributes.items())}]]
+    currLvl={tree.nodeName:dict(tree.attributes.items())}
     # print '---'*cnt, "NodeName:",tree.nodeName,"Value:",dict(tree.attributes.items())
     addnAttr=[]
     for childTree in iterate_children(tree):
@@ -180,14 +203,16 @@ def loopXML(tree=None,cnt=0):
             addnAttr.append(childLvl)
     if len(addnAttr)>0:
         try:
-            addnAttrSorted=sorted(addnAttr,key=lambda x: x[0][0].items()[0][1].get("NAME"))
+            # addnAttrSorted=sorted(addnAttr,key=lambda x: x[0][0].items()[0][1].get("NAME"))
+            addnAttrSorted=sorted(addnAttr,key=lambda x: x.items()[0][1].get("NAME"))
         except Exception,e:
-            print('Eannot sort  : %s' %addnAttr)
+            print('Cannot sort  : %s' %addnAttr)
             print('Error : %s' %e)
             pass
         else:
             addnAttr=addnAttrSorted
-        currLvl.extend(addnAttr)
+        # currLvl.extend(addnAttr)
+        currLvl[tree.nodeName]["JOB_Attributes"]=addnAttr
     return currLvl
 
 def _sortAtts(x):
@@ -207,11 +232,26 @@ mapping={
 # print cmpDeepLists(a,b)
 # sys.exit(0)
 
+def showResult(rslt):
+    if isinstance(rslt,list):
+        for i in range(len(rslt)):
+            showResult(rslt[i])
+    elif isinstance(rslt,dict):
+        for key,v in rslt.items():
+            if re.search(r'(.*Insert.*|.*Change.*|.*Delete.*)',key,re.IGNORECASE):
+                print ("%s:%s") % (key,rslt.get(key))
+            elif isinstance(rslt.get(key), list):
+                showResult(rslt.get(key))
+            elif isinstance(rslt.get(key), dict):
+                showResult(rslt.get(key))
+    pass
+
 UAT=parseXML_New('./IN_UAT.xml')
-replaceList(UAT,mapping)
+replaceDict(UAT,mapping)
 PRD=parseXML_New('./IN_PRD.xml')
-a= cmpDeepLists(UAT,PRD)
-print a
+a= cmpDeepDict(UAT,PRD)
+# print a
+showResult(a)
 sys.exit(0)
 jobList_A=parseXML('./IN_PRD.xml')
 jobList_B=parseXML('./IN_UAT.xml')
