@@ -38,7 +38,7 @@ git remote add remotes https://github.com/pycontribs/jenkinsapi.git
 git ls-remote remotes | grep heads
 
 # compare 2 branch's commit, and show the ID
-git fetch
+git fetch remotes
 git log remotes/master --oneline | head
 git log remotes/pytest --oneline | head
 git log --left-right --graph --cherry-pick --oneline remotes/master...remotes/pytest
@@ -72,3 +72,45 @@ git diff-tree --no-commit-id --name-only -r 0fafb
 git show 326505e2
 # next -- how to push the tag into remote GIT HUB?
 git push origin --tags
+
+
+# how to auto create the pull request?
+
+
+# Flow:
+project <BASEL>
+Step 1. Script to create a new brach and new jenkins jobs
+BranchName: <BASEL>
+Dev Env:
+/hsbc/rpm/git/<basel>_ut/
+/hsbc/rpm/git/<basel>_sit/ (cannot change rpm01exe)
+Jenkins job:
+GIT_WATCH_<BASEL> <- PIPELINE_<BASEL>
+
+For GIT_WATCH_<BASEL>: Monitor any push on the <BASEL> branch
+
+For PIPELINE_<BASEL>:
+<preparation>
+1. check if remote path exist, if not then fetch all from GITHUB, and create folder in DS/SAS server
+2.       if remotem path exist,
+git init
+git remote add remotes https://github.com/pycontribs/jenkinsapi.git
+git fetch remotes
+
+for cmtId in `git log --right-only --graph --cherry-pick --oneline remotes/master...remotes/pytest | awk '{print $2}'`
+do
+    git diff-tree --no-commit-id --name-only -r $cmtId
+
+done | sort | uniq
+etl.list
+sas.list
+datastage.list
+cat etl.list | xargs -n1 tar -cvf - | bzip2 > etl.tar
+cat sas.list | xargs -n1 tar -cvf - | bzip2 > sas.tar
+<Deploy>
+scp etl.tar uat-basel.hsbc:/hsbc/rpm/git/xxx/etl.tar
+scp sas.tar uat-basel.hsbc:/hsbc/rpm/git/xxx/sas.tar
+
+ssh tar -xvf uat-basel.hsbc:/hsbc/rpm/git/xxx/etl.tar
+ssh tar -xvf uat-basel.hsbc:/hsbc/rpm/git/xxx/sas.tar
+
