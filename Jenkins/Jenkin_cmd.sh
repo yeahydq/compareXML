@@ -68,5 +68,7 @@ git log --pretty=oneline v1.01...v1.03
 git diff-tree --no-commit-id --name-only -r 285bf
 git diff-tree --no-commit-id --name-only -r 0fafb
 
+# show the changes per file for the commits
+git show 326505e2
 # next -- how to push the tag into remote GIT HUB?
 git push origin --tags
