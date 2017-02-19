@@ -144,3 +144,36 @@ catch (exc) {
 }
 
 // vim: ft=groovy
+            environment {
+                AN_ACCESS_KEY = credentials('jenkins_to_ubuntu_dick')
+            }
+
+node {
+   stage('Preparation') { // for display purposes
+//   sh "rm -rf .git"
+    git branch: 'regression', changelog: false, credentialsId: 'jenkins_to_gitHUB', poll: false, url: 'https://github.com/yeahydq/compareXML.git'
+
+         sh "echo 'preparation stage'"
+        //  sh '''
+        //  pwd
+        //  git init
+        //  git remote add remotes git@github.com:yeahydq/compareXML.git
+        //  git pull
+        //  '''
+    }
+   stage('Build') {
+      // Run the maven build
+      if (isUnix()) {
+         sh "echo 'build stage'"
+         sh '''
+         ssh -o StrictHostKeychecking=no dick@localhost "hostname;pwd;whoami;"
+         '''
+      }
+   }
+   stage('Results') {
+      if (isUnix()) {
+         sh "echo 'result stage'"
+         sh "sleep 10"
+      }
+   }
+}
