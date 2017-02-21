@@ -114,3 +114,5 @@ scp sas.tar uat-basel.hsbc:/hsbc/rpm/git/xxx/sas.tar
 ssh tar -xvf uat-basel.hsbc:/hsbc/rpm/git/xxx/etl.tar
 ssh tar -xvf uat-basel.hsbc:/hsbc/rpm/git/xxx/sas.tar
 
+https://jenkins.io/doc/pipeline/examples/
+
