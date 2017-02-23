@@ -25,6 +25,10 @@ node {
    stage('Results') {
       if (isUnix()) {
          sh "echo 'result stage'"
+         sh '''
+         whoami
+         hostname
+         '''
          sh "sleep 10"
       }
    }
