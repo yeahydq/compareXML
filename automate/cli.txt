@@ -1,0 +1,39 @@
+https://communities.bmc.com/community/bmcdn/enterprise_scheduling_workload_automation/blog/2013/12/09/my-control-m-tech-tips-vol-3
+
+Occasionally you may have to do some scripting to achieve some specific automation or integration goal. In a previous post, I mentioned the Control-M/Enterprise Manager API, which is the best choice when programming in Java and similar languages. In this post, I discuss a command line utility, called “cli”, which provides many of the same capabilities and is the best choice for shell scripts, batch files and other script-like environments like event management and other data center automation solutions.
+
+There are a variety of other utilities many users are familiar with such as ctmorder and ctmcreate. However, these are platform specific and must be executed on either a specific agent or Control-M Server. If you desire or need solutions that are platform neutral, “cli” is the better choice.
+
+Here are the functions you can perform with this utility:
+
+Upload or download folders
+Order or force folders
+Order or force jobs
+Force jobs in a folder
+Upload or download calendars
+Delete job processing definitions from folders
+
+Windows
+
+cli [{(-U emUser -P emPass) | -pf passwordFile}] -h hostName [-t timeout] [-DDMM] [-BY_FORCE] <cmd> [ACTION_REASON <reason for taking an audit action> [ACTION_NOTE <descriptive reason for audit action>]...
+
+Unix/Linux
+
+em cli [{(-U <emUser> -P <emPass>) | -pf <passwordFile>}] -h <hostName> [-t <timeout>] [-DDMM] [-BY_FORCE] <cmd> [ACTION_REASON <reason for taking an audit action> [ACTION_NOTE <descriptive reason for audit action>]...
+
+Valid values for <cmd>:
+
+-JOB_ORDER
+-JOB_FORCE
+-JOB_ORDER_INTO
+-JOB_FORCE_INTO
+-SUB_FOLDER_FORCE_INTO
+-FOLDER_ORDER
+-FOLDER_FORCE
+-FOLDER_UPLOAD
+-FOLDER_ DOWNLOAD
+-CAL_UPLOAD
+-CAL_DOWNLOAD
+-SUB_FOLDER_DELETE
+-JOB_DELETE
+-MEM_DELETE
