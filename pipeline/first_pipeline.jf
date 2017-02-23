@@ -31,13 +31,6 @@ node {
          '''
          sh "sleep 10"
       }
-    parallel (
-  windows: { node {
-    sh "echo building on windows now"
- }},
-  mac: { node {
-    sh "echo building on mac now"
-}}
 
    }
 }
